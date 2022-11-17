@@ -1,3 +1,24 @@
+/*
+@author John Yehia
+@since 11-14-2022
+@version 1.0
+
+Description:
+This program is supposed to read data from the 5 arrays presented from the PerodicTable.txt file.
+Using the element group, atomic number, name to determine whether it is an alkaline, alkali, or noble gas.
+This program also checks whether the data presented in the input file is valid or not. The number of the periodic
+table range from 1-118. This program also checks whether the atomic number is classified based on the PerodicTable.txt file.
+
+I used while loops, if statements, and methods to program this assignment. If statements were extremely essential in the
+development of this program. I called methods such as classify, which classifies the data using the PerodicTable.txt file.
+In addition, methods such as readName, checkNumber, isNobleGas, isAlkaliMetal, is AlkalineMetal and more were used.
+Every single piece of code in this program was essential, as this program contains many nuances.
+
+I found this program to be moderately difficult. I believe difficulty is what causes one to learn, and I sure did.
+I learned about concepts such as variable scope, calling methods effectively, and creating programs with more than
+one hundred lines of logic. I felt like I built something that was impactful, and I plan on building upon this program.
+I appreciate the learning experience presented to me and I wouldn't trade it for a simple programming assignment.
+ */
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -23,8 +44,10 @@ public class ChemicalClassify {
                 classify(number);
             } else {
                 ps.printf("%nERROR: Atomic Number: %d is invalid.%n", number);
+                //this here will add one to the errors variable.
                 errors++;
             }
+            //this here will add one to the total variable.
             total++;
         }
 
@@ -37,8 +60,10 @@ public class ChemicalClassify {
 
     //this method makes sure the number in the input file is a valid atomic number
     public static boolean checkNumber(int atomicNumber) {
+        //if the atomic number is between 1 and 118, it is indeed on the periodic table.
         if (atomicNumber >= 1 && atomicNumber <= 118) {
             return true;
+            //if not between 1 & 118, it is not on the periodic table.
         } else {
             return false;
         }
@@ -104,17 +129,19 @@ public class ChemicalClassify {
     or false if not. Elements in group 18 are considered noble gases.
        */
     public static boolean isNobleGas(int group) {
+        //if element group is 18, it is a noble gas
         if (group == 18) {
             return true;
         } else {
+            //if group isn't 18, it is not a noble gas
             return false;
         }
 
-        /*this method receives the element's group, an integer, and returns true if the element is an
-        alkali metal. If not, it returns false. Alkali metals are elements in group 1.
-         */
 
     }
+    /*this method receives the element's group, an integer, and returns true if the element is an
+        alkali metal. If not, it returns false. Alkali metals are elements in group 1.
+         */
 
     public static boolean isAlkaliMetal(int group) {
         if (group == 1) {
@@ -141,18 +168,26 @@ public class ChemicalClassify {
     This essentially classifies the elements.
      */
     public static void classify(int atomicNumber) throws Exception {
+        //this will print the atomic number if valid.
         ps.println("Atomic Number: " + atomicNumber + " is valid.");
         String name = readName(atomicNumber);
+        //if readName method returns "Not Found", we will print NOT FOUND IN TABLE
         if ("Not found".equals(name)) {
             ps.printf("%n%d NOT FOUND IN TABLE %n", atomicNumber);
         } else {
+            //here we call the readGroup method and pass the atomic number as a check.
             int group = readGroup(atomicNumber);
+            //here we call the readAtomicWeight method and pass the atomic number as a check.
             int mass = readAtomicWeight(atomicNumber);
+            //pretty self-explanatory. Neutrons are atomic mass minus number.
             int neutrons = mass - atomicNumber;
+            //we call the printName method and pass in the name.
             printName(name);
+            //here we do some basic printing to the printstream.
             ps.println("Atomic Weight: " + mass);
             ps.println("Group: " + group);
 
+            //here is an if statement using our element groups to determine the chemical property category.
             if (isAlkaliMetal(group)) {
                 ps.println("Alkali Metal");
             } else if (isAlkaline(group)) {
@@ -160,8 +195,10 @@ public class ChemicalClassify {
             } else if (isNobleGas(group)) {
                 ps.println("Noble Gas");
             } else {
+                //if the chemical type isn't on the periodic table text file, we shall print, "Not classified yet."
                 ps.println("Not classified yet.");
             }
+            //here we use a printf to beautifully format the amount of neutrons, electrons, and protons we have.
             ps.printf("%nProtons: %d    Neutrons: %d    Electrons: %d%n   ", atomicNumber, neutrons, atomicNumber);
         }
     }
