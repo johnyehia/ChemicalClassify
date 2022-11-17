@@ -1,0 +1,168 @@
+import java.io.File;
+import java.io.PrintStream;
+import java.util.Scanner;
+
+public class ChemicalClassify {
+    /*here in this program, the main method references the input data and prints said data
+        to an output file
+        the main method has to throw an exception, because I created a new input stream
+        */
+    static PrintStream ps;
+
+    public static void main(String[] args) throws Exception {
+        ps = new PrintStream("/Users/johnyehia/Desktop/output0.txt");
+        //we set these variables to default values
+        int total = 0;
+        int number = 0;
+        int errors = 0;
+
+        Scanner scanner = new Scanner(new File("/Users/johnyehia/Desktop/input0.txt"));
+        while (scanner.hasNext()) {
+            number = scanner.nextInt();
+            if (checkNumber(number)) {
+                classify(number);
+            } else {
+                ps.printf("%nERROR: Atomic Number: %d is invalid.%n", number);
+                errors++;
+            }
+            total++;
+        }
+
+        ps.println("Total data in input: " + total);
+        ps.println("Number of correct values in input: " + (total - errors));
+        ps.println("Number of errors in input: " + errors);
+        ps.close();
+        scanner.close();
+    }
+
+    //this method makes sure the number in the input file is a valid atomic number
+    public static boolean checkNumber(int atomicNumber) {
+        if (atomicNumber >= 1 && atomicNumber <= 118) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //this method is being passed the atomic number to return the name
+    //this method must throw an exception because a new input stream is being created
+    public static String readName(int atomicNumber) throws Exception {
+        Scanner scanner = new Scanner(new File("/Users/johnyehia/Desktop/PeriodicTable0.txt"));
+
+        while (scanner.hasNext()) {
+            int number = scanner.nextInt();
+            String name = scanner.next();
+
+            if (number == atomicNumber) {
+                scanner.close();
+                return name;
+            }
+        }
+        scanner.close();
+        return "Not found";
+    }
+
+    public static int readAtomicWeight(int atomicNumber) throws Exception {
+        Scanner scanner = new Scanner(new File("/Users/johnyehia/Desktop/PeriodicTable0.txt"));
+
+        while (scanner.hasNext()) {
+            int number = scanner.nextInt();
+            int mass = scanner.nextInt();
+
+            if (atomicNumber == number) {
+                scanner.close();
+                return mass;
+            }
+        }
+        scanner.close();
+        return 0;
+    }
+
+    //this method receives an atomicNumber and returns the corresponding atomic weight.
+    public static int readGroup(int atomicNumber) throws Exception {
+        Scanner scanner = new Scanner(new File("/Users/johnyehia/Desktop/PeriodicTable0.txt"));
+
+        while (scanner.hasNext()) {
+            int number = scanner.nextInt();
+            int group = scanner.nextInt();
+
+            if (atomicNumber == number) {
+                scanner.close();
+                return group;
+            }
+        }
+        scanner.close();
+        return 0;
+    }
+
+    //this method receives an element's name and print the name of the element with a heading
+    public static void printName(String name) {
+        ps.println("Name " + name);
+    }
+
+    /*this method receives the element's group, which is an int, and returns true if it is a noble gas,
+    or false if not. Elements in group 18 are considered noble gases.
+       */
+    public static boolean isNobleGas(int group) {
+        if (group == 18) {
+            return true;
+        } else {
+            return false;
+        }
+
+        /*this method receives the element's group, an integer, and returns true if the element is an
+        alkali metal. If not, it returns false. Alkali metals are elements in group 1.
+         */
+
+    }
+
+    public static boolean isAlkaliMetal(int group) {
+        if (group == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*
+    this method receives the element group, an int, and returns true if it is an alkaline earth metal.
+    Returns false if not.
+     */
+    public static boolean isAlkaline(int group) {
+        if (group == 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*this method receives an atomic number.
+    Then calls methods readName, readGroup, & readAtomicWeight.
+    This essentially classifies the elements.
+     */
+    public static void classify(int atomicNumber) throws Exception {
+        ps.println("Atomic Number: " + atomicNumber + " is valid.");
+        String name = readName(atomicNumber);
+        if ("Not found".equals(name)) {
+            ps.printf("%n%d NOT FOUND IN TABLE %n", atomicNumber);
+        } else {
+            int group = readGroup(atomicNumber);
+            int mass = readAtomicWeight(atomicNumber);
+            int neutrons = mass - atomicNumber;
+            printName(name);
+            ps.println("Atomic Weight: " + mass);
+            ps.println("Group: " + group);
+
+            if (isAlkaliMetal(group)) {
+                ps.println("Alkali Metal");
+            } else if (isAlkaline(group)) {
+                ps.println("Alkaline Metal");
+            } else if (isNobleGas(group)) {
+                ps.println("Noble Gas");
+            } else {
+                ps.println("Not classified yet.");
+            }
+            ps.printf("%nProtons: %d    Neutrons: %d    Electrons: %d%n   ", atomicNumber, neutrons, atomicNumber);
+        }
+    }
+}
